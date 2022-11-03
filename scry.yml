@@ -18,6 +18,8 @@
         - /opt/rclone
         - /opt/caddy/ssl
         - /opt/caddy/logs
+        - /opt/plex
+        - /opt/nextcloud
 
     - name: install unzip
       become: yes
@@ -41,6 +43,14 @@
     args:
       warn: no
     when: not stat_result.stat.exists
+
+  - name: Install fuse
+    apt: name={{ item }} state=latest update_cache=yes
+    loop: [ 'fuse' ]
+
+  - name: make sure user_allow_other is on in fuse config
+    become: yes
+    shell: echo 'user_allow_other' >> /etc/fuse.conf
 
   - name: write the rclone config file
     template:
@@ -94,25 +104,23 @@
   become: yes
 
   tasks:
-  - name: Install aptitude using apt
-    apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
-
   - name: Install required system packages
     apt: name={{ item }} state=latest update_cache=yes
-    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg', 'lsb-release', 'python3-pip', 'fuse']
 
   - name: Add Docker GPG apt Key
     apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg
+      url: https://download.docker.com/linux/debian/gpg
       state: present
 
   - name: Add Docker Repository
     apt_repository:
-      repo: deb https://download.docker.com/linux/ubuntu bionic stable
+      repo: deb https://download.docker.com/linux/debian bullseye stable
       state: present
 
   - name: Update apt and install docker-ce
-    apt: update_cache=yes name=docker-ce state=latest
+    apt: name={{ item }} state=latest update_cache=yes
+    loop: [ 'docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-compose-plugin' ]
 
   - name: Install Docker Module for Python
     pip:
@@ -123,7 +131,7 @@
       name: "plexinc/pms-docker"
       source: pull
 
-  - name: adding existing user "{{ ansible_user }}" to group sudo
+  - name: adding existing user "{{ ansible_user }}" to group docker
     user:
       name: "{{ ansible_user }}"
       groups: docker
@@ -144,8 +152,6 @@
       name: plex
       image: plexinc/pms-docker
       network_mode: host
-      env:
-        TZ: "Asia/Shanghai"
       volumes:
         - /opt/plex:/config
         - /tmp:/transcode
