@@ -1,1 +1,1 @@
-stuff for provisioning my media server
+stuff for provisining my pi gateway
