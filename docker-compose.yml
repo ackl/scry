@@ -1,0 +1,116 @@
+services:
+  homebridge:
+    image: homebridge/homebridge:latest
+    container_name: homebridge
+    network_mode: host
+    volumes:
+      - ./homebridge:/homebridge
+    restart: always
+
+  noip-duc:
+    image: ghcr.io/noipcom/noip-duc:latest
+    container_name: noip-duc
+    env_file:
+      - nightingale.env
+    restart: always
+
+  xray:
+    image: ghcr.io/xtls/xray-core:latest
+    container_name: xray
+    command: run -c /etc/xray/config.json
+    volumes:
+      - ./xray/config.json:/etc/xray/config.json
+    expose:
+      - 8888
+      - 8889
+    restart: always
+
+  transmission:
+    image: haugene/transmission-openvpn
+    container_name: transmission
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /mnt/usbHDD:/data
+    env_file:
+      - transmission.env
+    logging:
+        driver: json-file
+        options:
+            max-size: 10m
+    expose:
+      - 9091
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+
+  goaccess:
+    image: allinurl/goaccess
+    container_name: goaccess
+    expose:
+      - 7880
+    volumes:
+      - ./goaccess:/srv/report
+      - shared-data:/srv/logs:ro
+    command: "/srv/logs/access.log -o /srv/report/report.html --log-format=COMBINED --real-time-html"
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    environment:
+      TZ: 'Europe/London'
+      WEBPASSWORD: 'password'
+      WEB_PORT: 8081
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    expose:
+      - 8081
+    volumes:
+      - './pihole/etc-pihole:/etc/pihole'
+      - './pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped
+
+  nginx:
+    container_name: nginx
+    image: lscr.io/linuxserver/swag:latest
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/London
+      - URL=ackl.me
+      - VALIDATION=dns
+      - SUBDOMAINS=wildcard
+      - DNSPLUGIN=cloudflare
+      - EMAIL="contact@ackl.me"
+      - EXTRA_DOMAINS= "*.nightingale.ackl.me"
+      - PROPAGATION=20
+    volumes:
+      - ./nginx/config:/config
+      - shared-data:/config/log/nginx/
+      - ./goaccess:/config/www/goaccess
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
+
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    volumes:
+      - ./homer:/www/assets
+    expose:
+      - 8080
+
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    expose:
+      - 9090
+    volumes:
+      - /mnt/usdHDD:/srv
+      - ./filebrowser/filebrowser.db:/database.db
+      - ./filebrowser/.filebrowser.json:/.filebrowser.json
+
+volumes:
+  shared-data:
