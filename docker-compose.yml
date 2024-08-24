@@ -59,7 +59,7 @@ services:
     image: pihole/pihole:latest
     environment:
       TZ: 'Europe/London'
-      WEBPASSWORD: 'password'
+      WEBPASSWORD: '${PIHOLE_PASSWORD}'
       WEB_PORT: 8081
     ports:
       - "53:53/tcp"
