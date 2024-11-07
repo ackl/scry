@@ -4,10 +4,6 @@ homebridge/**
 !homebridge/
 !homebridge/.gitkeep
 
-xray/**
-!xray/
-!xray/config.json
-
 goaccess/**
 !goaccess/
 !goaccess/.gitkeep

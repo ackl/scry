@@ -20,7 +20,7 @@ services:
     command: run -c /etc/xray/config.json
     volumes:
       - ./xray/config.json:/etc/xray/config.json
-    expose:
+    ports:
       - 8888
       - 8889
     restart: always
@@ -102,15 +102,15 @@ services:
     expose:
       - 8080
 
-  filebrowser:
-    image: filebrowser/filebrowser
-    container_name: filebrowser
-    expose:
-      - 9090
-    volumes:
-      - /mnt/usdHDD:/srv
-      - ./filebrowser/filebrowser.db:/database.db
-      - ./filebrowser/.filebrowser.json:/.filebrowser.json
+  #filebrowser:
+    #image: filebrowser/filebrowser
+    #container_name: filebrowser
+    #expose:
+      #- 9090
+    #volumes:
+      #- /mnt/usdHDD:/srv
+      #- ./filebrowser/filebrowser.db:/database.db
+      #- ./filebrowser/.filebrowser.json:/.filebrowser.json
 
 volumes:
   shared-data:
