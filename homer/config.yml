@@ -1,0 +1,59 @@
+---
+title: "nightingale"
+subtitle: "夜莺"
+logo: "assets/assets/nightingale.png"
+header: true
+
+# Define your services
+services:
+  - name: Homebridge
+    logo: assets/homebridge.png
+    subtitle: "Smart Home Hub"
+    url: "http://nightingale.local:8581/"
+    tag: smart_home
+    description: "Control and automate your smart home devices."
+
+  - name: HomeAssistant
+    logo: assets/assets/home_assistant.png
+    subtitle: "Home Automation"
+    url: "http://nightingale.local:8123/"
+    tag: smart_home
+    description: "Your all-in-one home automation system."
+
+  - name: Transmission
+    logo: assets/assets/transmission.png
+    subtitle: "Torrent Client"
+    url: "https://torrent.nightingale.ackl.me/"
+    tag: downloads
+    description: "Download and manage torrents."
+
+  - name: PiHole
+    logo: assets/assets/pihole.png
+    subtitle: "Ad Blocker"
+    url: "http://<transmission-ip>:port"
+    tag: networking
+    description: "Network-wide ad and tracker blocking."
+
+  - name: Logs
+    icon: fa-book
+    subtitle: "System Logs"
+    url: "https://logs.nightingale.ackl.me"
+    tag: system
+    description: "Access system and service logs."
+
+  - name: Files
+    icon: fa-file
+    subtitle: "File Browser"
+    url: "http://<files-ip>:port"
+    tag: files
+    description: "Browse and manage files."
+
+  - name: Plex
+    logo: assets/assets/plex.png
+    subtitle: "Media Server"
+    url: "http://nightingale.local:32400/web"
+    tag: media
+    description: "Stream and organize your media."
+
+
+

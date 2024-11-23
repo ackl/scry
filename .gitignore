@@ -14,7 +14,6 @@ nginx/**
 !nginx/config/nginx/site-confs/
 !nginx/config/nginx/site-confs/default.conf
 
-homer/**
 !homer/
 !homer/.gitkeep
 
@@ -31,3 +30,11 @@ xray/**
 !xray/.gitkeep
 
 rclone.conf
+
+homeassistant/**
+!homeassistant/
+!homeassistant/.gitkeep
+
+front_door/**
+!front_door/
+!front_door/.gitkeep

@@ -1,4 +1,12 @@
 services:
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    volumes:
+      - ./homer:/www/assets
+    expose:
+      - 8080
+
   homebridge:
     image: homebridge/homebridge:latest
     container_name: homebridge
@@ -6,6 +14,14 @@ services:
     volumes:
       - ./homebridge:/homebridge
     restart: always
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    restart: always
+    network_mode: host
+    volumes:
+      - ./homeassistant:/config
 
   noip-duc:
     image: ghcr.io/noipcom/noip-duc:latest
@@ -94,23 +110,87 @@ services:
       - 80:80
     restart: unless-stopped
 
-  homer:
-    image: b4bz/homer
-    container_name: homer
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - VERSION=docker
     volumes:
-      - ./homer:/www/assets
-    expose:
-      - 8080
+      - /mnt/usbHDD/plex_config:/config
+      - /mnt/usbHDD/TV:/tv
+      - /mnt/usbHDD:/movies
+    restart: unless-stopped
+    ports:
+      - 32400:32400
 
-  #filebrowser:
-    #image: filebrowser/filebrowser
-    #container_name: filebrowser
-    #expose:
-      #- 9090
-    #volumes:
-      #- /mnt/usdHDD:/srv
-      #- ./filebrowser/filebrowser.db:/database.db
-      #- ./filebrowser/.filebrowser.json:/.filebrowser.json
+  scrypted:
+      environment:
+          - SCRYPTED_WEBHOOK_UPDATE_AUTHORIZATION=Bearer ${WATCHTOWER_HTTP_API_TOKEN:-env_missing_fallback}
+          - SCRYPTED_WEBHOOK_UPDATE=http://localhost:10444/v1/update
+
+          # Avahi can be used for network discovery by passing in the host daemon
+          # or running the daemon inside the container. Choose one or the other.
+          # Uncomment next line to run avahi-daemon inside the container.
+          # See volumes and security_opt section below to use the host daemon.
+          #- SCRYPTED_DOCKER_AVAHI=true
+
+      image: ghcr.io/koush/scrypted
+
+      volumes:
+          - /mnt/usbHDD/front_door/recordings/video:/nvr
+          - /mnt/usbHDD/front_door:/server/volume
+          - /var/run/dbus:/var/run/dbus
+
+
+      security_opt:
+          - apparmor:unconfined
+      devices: [
+           "/dev/dri:/dev/dri",
+      ]
+
+      container_name: scrypted
+      restart: unless-stopped
+      network_mode: host
+
+      logging:
+          driver: "none"
+          # driver: "json-file"
+          # options:
+          #     max-size: "10m"
+          #     max-file: "10"
+      labels:
+          - "com.centurylinklabs.watchtower.scope=scrypted"
+
+  watchtower:
+      environment:
+          - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN:-env_missing_fallback}
+          - WATCHTOWER_HTTP_API_UPDATE=true
+          - WATCHTOWER_SCOPE=scrypted
+          - WATCHTOWER_HTTP_API_PERIODIC_POLLS=${WATCHTOWER_HTTP_API_PERIODIC_POLLS:-true}
+      image: containrrr/watchtower
+      container_name: scrypted-watchtower
+      restart: unless-stopped
+      volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+      labels:
+          - "com.centurylinklabs.watchtower.scope=scrypted"
+      ports:
+          # The auto update port 10444 can be configured
+          # Must match the port in the auto update url above.
+          - 10444:8080
+      # check for updates once an hour (interval is in seconds)
+      command: --interval 3600 --cleanup --scope scrypted
+
+  dufs:
+      image: sigoden/dufs
+      volumes:
+          - '/mnt/usbHDD:/data'
+      ports:
+          - '5000:5000'
+      command: /data -A
 
 volumes:
   shared-data:
