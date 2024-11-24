@@ -60,23 +60,11 @@ services:
       - 51413:51413
       - 51413:51413/udp
 
-  goaccess:
-    image: allinurl/goaccess
-    container_name: goaccess
-    expose:
-      - 7880
-    volumes:
-      - ./goaccess:/srv/report
-      - shared-data:/srv/logs:ro
-    command: "/srv/logs/access.log -o /srv/report/report.html --log-format=COMBINED --real-time-html"
-
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
-    environment:
-      TZ: 'Europe/London'
-      WEBPASSWORD: '${PIHOLE_PASSWORD}'
-      WEB_PORT: 8081
+    env_file:
+      - pihole.env
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -109,6 +97,17 @@ services:
       - 443:443
       - 80:80
     restart: unless-stopped
+
+  goaccess:
+    image: allinurl/goaccess
+    container_name: goaccess
+    ports:
+      - 7890
+    volumes:
+      #- ./nginx/config/keys:/etc/goaccess
+      - ./goaccess:/srv/report
+      - shared-data:/srv/logs:ro
+    command: "/srv/logs/access.log -a -o /srv/report/report.html --log-format=COMBINED --real-time-html"
 
   plex:
     image: lscr.io/linuxserver/plex:latest

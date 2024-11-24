@@ -62,7 +62,7 @@ services:
       - name: PiHole
         logo: assets/tools/pihole.png
         subtitle: "Ad Blocker"
-        url: "http://<transmission-ip>:port"
+        url: "http://nightingale.local:8081"
         tag: networking
         description: "Network-wide ad and tracker blocking."
 
@@ -76,7 +76,7 @@ services:
       - name: Files
         icon: fa-solid fa-file
         subtitle: "File Browser"
-        url: "http://dufs:5000"
+        url: "https://files.nightingale.ackl.me"
         tag: files
         description: "Browse and manage files."
 
