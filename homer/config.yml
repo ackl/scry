@@ -4,56 +4,88 @@ subtitle: "夜莺"
 logo: "assets/tools/nightingale.png"
 header: true
 
+
+colors:
+  light:
+    highlight-primary: "#3367d6"
+    highlight-secondary: "#4285f4"
+    highlight-hover: "#5a95f5"
+    background: "#f5f5f5"
+    card-background: "#ffffff"
+    text: "#363636"
+    text-header: "#424242"
+    text-title: "#303030"
+    text-subtitle: "#424242"
+    card-shadow: rgba(0, 0, 0, 0.1)
+    link: "#3273dc"
+    link-hover: "#363636"
+  dark:
+    highlight-primary: "#3367d6"
+    highlight-secondary: "#4285f4"
+    highlight-hover: "#5a95f5"
+    background: "#131313"
+    card-background: "#2b2b2b"
+    text: "#eaeaea"
+    text-header: "#ffffff"
+    text-title: "#fafafa"
+    text-subtitle: "#f5f5f5"
+    card-shadow: rgba(0, 0, 0, 0.4)
+    link: "#3273dc"
+    link-hover: "#ffdd57"
+
 # Define your services
 services:
-  - name: Homebridge
-    logo: assets/tools/homebridge.png
-    subtitle: "Smart Home Hub"
-    url: "http://nightingale.local:8581/"
-    tag: smart_home
-    description: "Control and automate your smart home devices."
+  - name: Applications
+    icon: "fas fa-cloud"
+    items:
+      - name: Homebridge
+        logo: assets/tools/homebridge.png
+        subtitle: "Smart Home Hub"
+        url: "http://nightingale.local:8581/"
+        tag: smart_home
+        description: "Control and automate your smart home devices."
 
-  - name: HomeAssistant
-    logo: assets/tools/homeassistant.png
-    subtitle: "Home Automation"
-    url: "http://nightingale.local:8123/"
-    tag: smart_home
-    description: "Your all-in-one home automation system."
+      - name: HomeAssistant
+        logo: assets/tools/homeassistant.png
+        subtitle: "Home Automation"
+        url: "http://nightingale.local:8123/"
+        tag: smart_home
+        description: "Your all-in-one home automation system."
 
-  - name: Transmission
-    logo: assets/tools/transmission.png
-    subtitle: "Torrent Client"
-    url: "https://torrent.nightingale.ackl.me/"
-    tag: downloads
-    description: "Download and manage torrents."
+      - name: Transmission
+        logo: assets/tools/transmission.png
+        subtitle: "Torrent Client"
+        url: "https://torrent.nightingale.ackl.me/"
+        tag: downloads
+        description: "Download and manage torrents."
 
-  - name: PiHole
-    logo: assets/tools/pihole.png
-    subtitle: "Ad Blocker"
-    url: "http://<transmission-ip>:port"
-    tag: networking
-    description: "Network-wide ad and tracker blocking."
+      - name: PiHole
+        logo: assets/tools/pihole.png
+        subtitle: "Ad Blocker"
+        url: "http://<transmission-ip>:port"
+        tag: networking
+        description: "Network-wide ad and tracker blocking."
 
-  - name: Logs
-    icon: fa-solid fa-book
-    subtitle: "System Logs"
-    url: "https://logs.nightingale.ackl.me"
-    tag: system
-    description: "Access system and service logs."
+      - name: Logs
+        icon: fa-solid fa-book
+        subtitle: "System Logs"
+        url: "https://logs.nightingale.ackl.me"
+        tag: system
+        description: "Access system and service logs."
 
-  - name: Files
-    icon: fa-solid fa-file
-    subtitle: "File Browser"
-    url: "http://<files-ip>:port"
-    tag: files
-    description: "Browse and manage files."
+      - name: Files
+        icon: fa-solid fa-file
+        subtitle: "File Browser"
+        url: "http://dufs:5000"
+        tag: files
+        description: "Browse and manage files."
 
-  - name: Plex
-    logo: assets/tools/plex.png
-    subtitle: "Media Server"
-    url: "http://nightingale.local:32400/web"
-    tag: media
-    description: "Stream and organize your media."
+      - name: Plex
+        logo: assets/tools/plex.png
+        subtitle: "Media Server"
+        url: "http://nightingale.local:32400/web"
+        tag: media
+        description: "Stream and organize your media."
 
 
 
